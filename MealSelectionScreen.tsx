@@ -24,7 +24,8 @@ const MealSelectionScreen = ({navigation}) => {
 const styles = StyleSheet.create({
   titleBox: {
     flex: 1,
-    padding: 10,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffeedd'

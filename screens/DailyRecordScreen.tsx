@@ -1,48 +1,38 @@
 // components/InputScreen.js
-import React from 'react';
+import React, {useContext} from 'react';
 import {useState} from 'react';
 import { View, Text, TextInput, Padding, ScrollView, TouchableOpacity, Button, StyleSheet } from 'react-native';
 import ItemRow from '../ItemRow';
+import SummaryButtonPanel from '../components/SummaryButtonPanel';
 import RNPickerSelect from 'react-native-picker-select';
 import SummaryIcon from '../components/SummaryIcon.tsx';
+import {GlobalContext} from '../GlobalContext.tsx';
 
 const DailyRecordScreen = ({route, navigation}) => {
-    const {label, calories, protein, fat, satFat, carbs, sugar} = route.params;
+    const {label} = route.params;
     const [meal, setMeal] = useState('Overall');
+    const {globalState, setGlobalState} = useContext(GlobalContext);
+    const calories = Math.round(globalState[meal].calories);
+    const protein = Math.round(globalState[meal].protein);
+    const fat = Math.round(globalState[meal].fat);
+    const satFat = Math.round(globalState[meal].satFat);
+    const carbs = Math.round(globalState[meal].carbs);
+    const sugar = Math.round(globalState[meal].sugar);
 
-    const setBreakFast = () => {
-        console.log('Set Breakfast!');
+    const meals = ['Breakfast', 'Lunch', 'Snack', 'Dinner', 'Overall'];
+
+    const checkNewMeal = (mealName) => {
+        setMeal(mealName);
     }
+
     return (
     <View style = {{flex: 1, backgroundColor: '#ffeedd'}}>
         <View style = {{flex: 0.08, backgroundColor: '#99ffff', justifyContent: 'center',
                         alignItems: 'center',}}>
              <Text style = {{fontSize: 22, fontWeight: 'bold'}}>{label} Summary</Text>
         </View>
-        <View style = {{flex: 0.22, backgroundColor: '#ffeedd', paddingHorizontal: 10,
-                        paddingVertical: 25, rowGap: 20, marginBottom: 50}}>
-            <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
-                <TouchableOpacity style={styles.circularButton} onPress={console.log('Breakfast selected!')}>
-                  <Text style={styles.buttonText}>Breakfast</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.circularButton} onPress={console.log('Lunch selected!')}>
-                  <Text style={styles.buttonText}>Lunch</Text>
-                </TouchableOpacity>
-            </View>
-            <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
-                <TouchableOpacity style={styles.circularButton} onPress={console.log('Snack selected!')}>
-                  <Text style={styles.buttonText}>Snack</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.circularButton} onPress={console.log('Dinner selected!')}>
-                  <Text style={styles.buttonText}>Dinner</Text>
-                </TouchableOpacity>
-            </View>
-            <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
-                <TouchableOpacity style={styles.circularButton} onPress={console.log('Overall selected!')}>
-                  <Text style={styles.buttonText}>Overall</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
+        <SummaryButtonPanel currentMeal={meal} meals={meals} preClickColor='#00ccff'
+                postClickColor='#0088ff' newMealFunction={checkNewMeal}></SummaryButtonPanel>
         <View style = {{flex: 0.54, rowGap: 10, backgroundColor: '#ffffff', padding: 20, marginHorizontal: 30,}}>
             <View style = {{flex: 1, flexDirection: 'row', columnGap: 20,
                 justifyContent: 'space-evenly', alignItems: 'center', padding: 10,}}>
@@ -132,3 +122,28 @@ const styles = StyleSheet.create({
 });
 
 export default DailyRecordScreen;
+
+// <View style = {{flex: 0.22, backgroundColor: '#ffeedd', paddingHorizontal: 10,
+//                         paddingVertical: 25, rowGap: 20, marginBottom: 50}}>
+//             <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
+//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Breakfast' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Breakfast')}>
+//                   <Text style={styles.buttonText}>Breakfast</Text>
+//                 </TouchableOpacity>
+//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Lunch' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Lunch')}>
+//                   <Text style={styles.buttonText}>Lunch</Text>
+//                 </TouchableOpacity>
+//             </View>
+//             <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
+//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Snack' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Snack')}>
+//                   <Text style={styles.buttonText}>Snack</Text>
+//                 </TouchableOpacity>
+//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Dinner' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Dinner')}>
+//                   <Text style={styles.buttonText}>Dinner</Text>
+//                 </TouchableOpacity>
+//             </View>
+//             <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
+//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Overall' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Overall')}>
+//                   <Text style={styles.buttonText}>Overall</Text>
+//                 </TouchableOpacity>
+//             </View>
+//         </View>

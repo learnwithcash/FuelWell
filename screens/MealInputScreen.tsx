@@ -1,9 +1,10 @@
 // components/InputScreen.js
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Padding, ScrollView, TouchableOpacity, Button, StyleSheet } from 'react-native';
 import ItemRow from '../ItemRow';
 import RNPickerSelect from 'react-native-picker-select';
 import MealSummaryScreen from './MealSummaryScreen.tsx';
+import {GlobalContext} from '../GlobalContext.tsx';
 
 const MealInputScreen = ({route, navigation}) => {
     const [calories, setCalories] = useState(0);
@@ -14,6 +15,7 @@ const MealInputScreen = ({route, navigation}) => {
     const [sugar, setSugar] = useState(0);
 
     const {meal} = route.params;
+    const {globalState, setGlobalState} = useContext(GlobalContext);
 
     const updateNutrition = (name, quantity) => {
             // Gets called from inside each itemRow with the selected name of food item and its quantity
@@ -36,10 +38,31 @@ const MealInputScreen = ({route, navigation}) => {
     }
 
     const onSubmit = () => {
+        // Updating the calculated nutrition values to the GlobalProvider so that it can be read in the MealSummaryScreen
+        setGlobalState((prevState) => ({
+            ...prevState,
+            [meal]: {
+                 ...prevState[meal],
+                 calories: calories,
+                 protein: protein,
+                 fat: fat,
+                 satFat: satFat,
+                 carbs: carbs,
+                 sugar: sugar,
+            },
+            ['Overall']: {
+                ...prevState['Overall'],
+                calories: prevState['Overall'].calories - prevState[meal].calories + calories,
+                protein: prevState['Overall'].protein - prevState[meal].protein + protein,
+                fat: prevState['Overall'].fat - prevState[meal].fat + fat,
+                satFat: prevState['Overall'].satFat - prevState[meal].satFat + satFat,
+                carbs: prevState['Overall'].carbs - prevState[meal].carbs + carbs,
+                sugar: prevState['Overall'].sugar - prevState[meal].sugar + sugar,
+            },
+        }));
+        // Navigating to the mealSummaryScreen
         navigation.navigate("MealSummaryScreen",
-            {label: meal, calories: Math.round(calories), fat: Math.round(fat),
-             protein: Math.round(protein), satFat: Math.round(satFat), carbs: Math.round(carbs),
-              sugar: Math.round(sugar)});
+            {label: meal});
     }
 
     const [items, setItems] = useState([

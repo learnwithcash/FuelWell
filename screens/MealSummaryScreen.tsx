@@ -1,19 +1,25 @@
 // components/InputScreen.js
-import React from 'react';
+import React, {useContext} from 'react';
 import { View, Text, TextInput, Padding, ScrollView, TouchableOpacity, Button, StyleSheet } from 'react-native';
 import ItemRow from '../ItemRow';
 import RNPickerSelect from 'react-native-picker-select';
 import DailyRecordScreen from './screens/DailyRecordScreen';
 import SummaryIcon from '../components/SummaryIcon.tsx';
+import {GlobalContext} from '../GlobalContext.tsx';
 
 const MealSummaryScreen = ({route, navigation}) => {
-    const {label, calories, protein, fat, satFat, carbs, sugar} = route.params;
+    const {label} = route.params;
+    const {globalState, setGlobalState} = useContext(GlobalContext);
+    const calories = Math.round(globalState[label].calories);
+    const protein = Math.round(globalState[label].protein);
+    const fat = Math.round(globalState[label].fat);
+    const satFat = Math.round(globalState[label].satFat);
+    const carbs = Math.round(globalState[label].carbs);
+    const sugar = Math.round(globalState[label].sugar);
 
     const onSubmit = () => {
         navigation.navigate("DailyRecordScreen",
-            {label: 'Today\'s', calories: Math.round(calories), fat: Math.round(fat),
-             protein: Math.round(protein), satFat: Math.round(satFat), carbs: Math.round(carbs),
-             sugar: Math.round(sugar)});
+            {label: 'Today\'s'});
     }
     return (
     <View style = {{flex: 1}}>
