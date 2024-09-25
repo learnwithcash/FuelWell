@@ -38,32 +38,35 @@ const MealInputScreen = ({route, navigation}) => {
     }
 
     const onSubmit = () => {
-        // Updating the calculated nutrition values to the GlobalProvider so that it can be read in the MealSummaryScreen
-        setGlobalState((prevState) => ({
-            ...prevState,
-            [meal]: {
-                 ...prevState[meal],
-                 calories: calories,
-                 protein: protein,
-                 fat: fat,
-                 satFat: satFat,
-                 carbs: carbs,
-                 sugar: sugar,
-            },
-            ['Overall']: {
-                ...prevState['Overall'],
-                calories: prevState['Overall'].calories - prevState[meal].calories + calories,
-                protein: prevState['Overall'].protein - prevState[meal].protein + protein,
-                fat: prevState['Overall'].fat - prevState[meal].fat + fat,
-                satFat: prevState['Overall'].satFat - prevState[meal].satFat + satFat,
-                carbs: prevState['Overall'].carbs - prevState[meal].carbs + carbs,
-                sugar: prevState['Overall'].sugar - prevState[meal].sugar + sugar,
-            },
-        }));
+        if(calories != 0){
+            // Updating the calculated nutrition values to the GlobalProvider so that it can be read in the MealSummaryScreen
+            setGlobalState((prevState) => ({
+                ...prevState,
+                [meal]: {
+                     ...prevState[meal],
+                     calories: calories,
+                     protein: protein,
+                     fat: fat,
+                     satFat: satFat,
+                     carbs: carbs,
+                     sugar: sugar,
+                },
+                ['Overall']: {
+                    ...prevState['Overall'],
+                    calories: prevState['Overall'].calories - prevState[meal].calories + calories,
+                    protein: prevState['Overall'].protein - prevState[meal].protein + protein,
+                    fat: prevState['Overall'].fat - prevState[meal].fat + fat,
+                    satFat: prevState['Overall'].satFat - prevState[meal].satFat + satFat,
+                    carbs: prevState['Overall'].carbs - prevState[meal].carbs + carbs,
+                    sugar: prevState['Overall'].sugar - prevState[meal].sugar + sugar,
+                },
+            }));
+            navigation.replace("MealSummaryScreen", {label: meal});
+        }
         // Navigating to the mealSummaryScreen
-        navigation.navigate("MealSummaryScreen",
-            {label: meal});
-    }
+//         navigation.pop();
+
+        }
 
     const [items, setItems] = useState([
         <ItemRow key = "1" title = {'Protein'} dropDownItems = {MacroItems.protein} updateParent = {updateNutrition}/>,
@@ -86,7 +89,7 @@ const MealInputScreen = ({route, navigation}) => {
 
     return (
     <View style = {{flex: 1}}>
-        <View style = {{flex: 0.08, backgroundColor: '#99ffff', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        <View style = {{flex: 0.06, backgroundColor: '#99ffff', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
             <Text style = {{fontSize: 24, fontWeight: 'bold'}}>{meal}</Text>
         </View>
         <View style = {{flex: 1, backgroundColor: '#ffeedd', paddingHorizontal: 20, rowGap: 5}}>
@@ -95,13 +98,13 @@ const MealInputScreen = ({route, navigation}) => {
                 {items}
             </ScrollView>
         </View>
-        <View style = {{flex: 0.08, backgroundColor: '#ddffff', padding: 10,
+        <View style = {{flex: 0.06, backgroundColor: '#ddffff', padding: 10,
             flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly'
             }}>
             <TouchableOpacity style={styles.circularButton} onPress={() => addItem(MacroItems.food)}>
               <Text style={styles.buttonText}>Add Item</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.circularButton} onPress={onSubmit}>
+            <TouchableOpacity style={[styles.circularButton, {backgroundColor: calories>0 ? '#0088ff' : '#00ccff'}]} onPress={onSubmit}>
                <Text style={styles.buttonText}>Submit</Text>
             </TouchableOpacity>
         </View>
@@ -289,10 +292,10 @@ const styles = StyleSheet.create({
     borderRadius: 8, // Rounded corners
   },
   circularButton: {
-      padding: 10, // Adjust for padding from the bottom
+      padding: 5, // Adjust for padding from the bottom
       alignSelf: 'center', // Center horizontally
       width: 150, // Diameter of 60 (2 * radius)
-      height: 50, // Same as width to make it a circle
+      height: 40, // Same as width to make it a circle
       borderRadius: 20, // Half of width/height for circular shape
       backgroundColor: '#0088ff',
       justifyContent: 'center',
@@ -320,7 +323,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: '#fff', // Custom text color
-    fontSize: 18,// Custom font size
+    fontSize: 16,// Custom font size
     fontWeight: 'bold'
   },
 });

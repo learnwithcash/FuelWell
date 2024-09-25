@@ -18,17 +18,22 @@ const MealSummaryScreen = ({route, navigation}) => {
     const sugar = Math.round(globalState[label].sugar);
 
     const onSubmit = () => {
-        navigation.navigate("DailyRecordScreen",
-            {label: 'Today\'s'});
+        navigation.replace("DailyRecordScreen",
+            {label: label});
+    }
+
+    const onClickingUpdate = () => {
+        navigation.replace("MealInputScreen",
+            {meal: label});
     }
     return (
     <View style = {{flex: 1}}>
-        <View style = {{flex: 0.08, backgroundColor: '#99ffff', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+        <View style = {{flex: 0.06, backgroundColor: '#99ffff', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
             <Text style = {{fontSize: 22, fontWeight: 'bold'}}>{label} Summary</Text>
         </View>
         <View style = {{flex: 1, backgroundColor: '#ffeedd', padding: 20, rowGap: 5}}>
             <Text style = {{fontSize: 18, alignSelf: 'center', fontWeight: 'bold', paddingHorizontal: 20,}}>Macro Breakdown</Text>
-            <View style = {{flex: 0.6, rowGap: 20}}>
+            <View style = {{flex: 0.8, rowGap: 20}}>
                 <View style = {{flex: 1, flexDirection: 'row', columnGap: 40,
                     justifyContent: 'space-evenly', alignItems: 'center', padding: 10,}}>
                     <SummaryIcon label = 'Calories' data = {calories}/>
@@ -44,6 +49,10 @@ const MealSummaryScreen = ({route, navigation}) => {
                     <SummaryIcon label = 'Sat. Fat' data = {satFat}/>
                     <SummaryIcon label = 'Sugar' data = {sugar}/>
                 </View>
+                <TouchableOpacity style={[styles.circularButton, {marginTop: 20, backgroundColor: '#00ccff', width: 180}]}
+                                  onPress={onClickingUpdate}>
+                  <Text style={styles.buttonText}>Reset {label}</Text>
+                </TouchableOpacity>
             </View>
         </View>
         <View style = {{flex: 0.08, backgroundColor: '#ddffff', padding: 10,

@@ -30,8 +30,9 @@ const ItemRow = ({title, dropDownItems, updateParent}) => {
 //     }, [qty]);
 
   const updateItemNutrition = (text) => {
-        if (/^\d*$/.test(text)) {
-          const screenQty = parseInt(text);
+        // Old Regex - /^\d*$/ - Used parseInt(text) instead of parseFloat.
+        if (/\d+(\.\d+)?/.test(text)) {
+          const screenQty = parseFloat(text);
           if(text != ''){
             updateParent(itemName, screenQty - qty);
             setQuantity(screenQty);

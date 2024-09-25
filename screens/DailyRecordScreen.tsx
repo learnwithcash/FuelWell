@@ -10,7 +10,8 @@ import {GlobalContext} from '../GlobalContext.tsx';
 
 const DailyRecordScreen = ({route, navigation}) => {
     const {label} = route.params;
-    const [meal, setMeal] = useState('Overall');
+    const meals = ['Breakfast', 'Lunch', 'Snack', 'Dinner', 'Overall'];
+    const [meal, setMeal] = useState(label);
     const {globalState, setGlobalState} = useContext(GlobalContext);
     const calories = Math.round(globalState[meal].calories);
     const protein = Math.round(globalState[meal].protein);
@@ -19,21 +20,19 @@ const DailyRecordScreen = ({route, navigation}) => {
     const carbs = Math.round(globalState[meal].carbs);
     const sugar = Math.round(globalState[meal].sugar);
 
-    const meals = ['Breakfast', 'Lunch', 'Snack', 'Dinner', 'Overall'];
-
     const checkNewMeal = (mealName) => {
         setMeal(mealName);
     }
 
     return (
     <View style = {{flex: 1, backgroundColor: '#ffeedd'}}>
-        <View style = {{flex: 0.08, backgroundColor: '#99ffff', justifyContent: 'center',
+        <View style = {{flex: 0.06, backgroundColor: '#99ffff', justifyContent: 'center',
                         alignItems: 'center',}}>
-             <Text style = {{fontSize: 22, fontWeight: 'bold'}}>{label} Summary</Text>
+             <Text style = {{fontSize: 22, fontWeight: 'bold'}}>Today's Summary</Text>
         </View>
         <SummaryButtonPanel currentMeal={meal} meals={meals} preClickColor='#00ccff'
                 postClickColor='#0088ff' newMealFunction={checkNewMeal}></SummaryButtonPanel>
-        <View style = {{flex: 0.54, rowGap: 10, backgroundColor: '#ffffff', padding: 20, marginHorizontal: 30,}}>
+        <View style = {{flex: 0.54, rowGap: 10, padding: 5, backgroundColor: '#faeeda', elevation: 5, marginHorizontal: 30,}}>
             <View style = {{flex: 1, flexDirection: 'row', columnGap: 20,
                 justifyContent: 'space-evenly', alignItems: 'center', padding: 10,}}>
                 <SummaryIcon label = 'Calories' data = {calories}/>
