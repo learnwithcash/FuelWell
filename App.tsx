@@ -6,9 +6,11 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {GlobalProvider} from './GlobalContext.tsx';
 import {View, Text} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Stack = createStackNavigator();
 
 const FuelWellApp = () => {
+
   return (
         <GlobalProvider>
             <NavigationContainer>

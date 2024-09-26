@@ -1,6 +1,6 @@
 // components/InputScreen.js
 import React, { useState, useContext } from 'react';
-import { View, Text, TextInput, Padding, ScrollView, TouchableOpacity, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Padding, ScrollView, TouchableOpacity, Button, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import ItemRow from '../ItemRow';
 import RNPickerSelect from 'react-native-picker-select';
 import MealSummaryScreen from './MealSummaryScreen.tsx';
@@ -88,27 +88,31 @@ const MealInputScreen = ({route, navigation}) => {
       };
 
     return (
-    <View style = {{flex: 1}}>
-        <View style = {{flex: 0.06, backgroundColor: '#99ffff', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-            <Text style = {{fontSize: 24, fontWeight: 'bold'}}>{meal}</Text>
+    <KeyboardAvoidingView style={{flex: 1}}   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+            <View style = {{flex: 1}}>
+                <View style = {{flex: 0.06, backgroundColor: '#99ffff', flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style = {{fontSize: 24, fontWeight: 'bold'}}>{meal}</Text>
+                </View>
+                <View style = {{flex: 1, backgroundColor: '#ffeedd', paddingHorizontal: 20, rowGap: 5}}>
+                    <Text style = {{fontSize: 18, alignSelf: 'center', fontWeight: 'bold', padding: 20,}}>What did you have in {meal}?</Text>
+                    <ScrollView style = {{flex: 0.8, rowGap: 10}}>
+                        {items}
+                    </ScrollView>
+                </View>
+
+            <View style = {{flex: 0.06, backgroundColor: '#ddffff', padding: 10,
+                flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly'
+                }}>
+                <TouchableOpacity style={styles.circularButton} onPress={() => addItem(MacroItems.food)}>
+                  <Text style={styles.buttonText}>Add Item</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.circularButton, {backgroundColor: calories>0 ? '#0088ff' : '#00ccff'}]} onPress={onSubmit}>
+                   <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
+            </View>
         </View>
-        <View style = {{flex: 1, backgroundColor: '#ffeedd', paddingHorizontal: 20, rowGap: 5}}>
-            <Text style = {{fontSize: 18, alignSelf: 'center', fontWeight: 'bold', padding: 20,}}>What did you have in {meal}?</Text>
-            <ScrollView style = {{flex: 0.8, rowGap: 10}}>
-                {items}
-            </ScrollView>
-        </View>
-        <View style = {{flex: 0.06, backgroundColor: '#ddffff', padding: 10,
-            flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly'
-            }}>
-            <TouchableOpacity style={styles.circularButton} onPress={() => addItem(MacroItems.food)}>
-              <Text style={styles.buttonText}>Add Item</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={[styles.circularButton, {backgroundColor: calories>0 ? '#0088ff' : '#00ccff'}]} onPress={onSubmit}>
-               <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
-        </View>
-    </View>
+    </KeyboardAvoidingView>
+
     );
     };
 
