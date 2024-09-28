@@ -2,8 +2,7 @@
 import React , {useContext} from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import MealSummaryScreen from '../screens/MealSummaryScreen.tsx';
-import { GlobalContext } from '../GlobalContext.tsx';
-
+import { GlobalContext } from '../App.tsx';
 
 const MealButton = ({label, navigation}) => {
   const {globalState, setGlobalState} = useContext(GlobalContext);

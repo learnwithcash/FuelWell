@@ -3,8 +3,9 @@ import React, { useState, useContext } from 'react';
 import { View, Text, TextInput, Padding, ScrollView, TouchableOpacity, Button, StyleSheet, KeyboardAvoidingView } from 'react-native';
 import ItemRow from '../ItemRow';
 import RNPickerSelect from 'react-native-picker-select';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import MealSummaryScreen from './MealSummaryScreen.tsx';
-import {GlobalContext} from '../GlobalContext.tsx';
+import {GlobalContext, storeData, currentDate} from '../App';
 
 const MealInputScreen = ({route, navigation}) => {
     const [calories, setCalories] = useState(0);
@@ -40,7 +41,8 @@ const MealInputScreen = ({route, navigation}) => {
     const onSubmit = () => {
         if(calories != 0){
             // Updating the calculated nutrition values to the GlobalProvider so that it can be read in the MealSummaryScreen
-            setGlobalState((prevState) => ({
+            setGlobalState((prevState) => {
+              const updatedState = {
                 ...prevState,
                 [meal]: {
                      ...prevState[meal],
@@ -60,11 +62,14 @@ const MealInputScreen = ({route, navigation}) => {
                     carbs: prevState['Overall'].carbs - prevState[meal].carbs + carbs,
                     sugar: prevState['Overall'].sugar - prevState[meal].sugar + sugar,
                 },
-            }));
-            navigation.replace("MealSummaryScreen", {label: meal});
+              };
+              storeData(currentDate, updatedState);
+              // Save the updated state to AsyncStorage
+
+              return updatedState;
+            });
+            navigation.replace("MealSummaryScreen", {label: meal, date: currentDate});
         }
-        // Navigating to the mealSummaryScreen
-//         navigation.pop();
 
         }
 

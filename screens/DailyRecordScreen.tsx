@@ -1,24 +1,57 @@
 // components/InputScreen.js
 import React, {useContext} from 'react';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 import { View, Text, TextInput, Padding, ScrollView, TouchableOpacity, Button, StyleSheet } from 'react-native';
 import ItemRow from '../ItemRow';
 import SummaryButtonPanel from '../components/SummaryButtonPanel';
 import RNPickerSelect from 'react-native-picker-select';
 import SummaryIcon from '../components/SummaryIcon.tsx';
-import {GlobalContext} from '../GlobalContext.tsx';
+import {GlobalContext, currentDate} from '../App.tsx';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const DailyRecordScreen = ({route, navigation}) => {
-    const {label} = route.params;
+    const {label, date} = route.params;
+    const todayDate = new Date().toLocaleString('default', { month: 'long', day: 'numeric' });
+    let displayDate = 'Today';
     const meals = ['Breakfast', 'Lunch', 'Snack', 'Dinner', 'Overall'];
     const [meal, setMeal] = useState(label);
+    const [historicalDateObject, setHistoricalDateObject] = useState(null);
     const {globalState, setGlobalState} = useContext(GlobalContext);
-    const calories = Math.round(globalState[meal].calories);
-    const protein = Math.round(globalState[meal].protein);
-    const fat = Math.round(globalState[meal].fat);
-    const satFat = Math.round(globalState[meal].satFat);
-    const carbs = Math.round(globalState[meal].carbs);
-    const sugar = Math.round(globalState[meal].sugar);
+    let calories = 0, protein = 0, fat = 0, satFat = 0, carbs = 0, sugar = 0;
+    if(date == todayDate){
+        // Key is currentDate, so we update from globalState
+        calories = Math.round(globalState[meal].calories);
+        protein = Math.round(globalState[meal].protein);
+        fat = Math.round(globalState[meal].fat);
+        satFat = Math.round(globalState[meal].satFat);
+        carbs = Math.round(globalState[meal].carbs);
+        sugar = Math.round(globalState[meal].sugar);
+    }
+    else{
+       displayDate = date;
+        // Key is not today's date, so need to find data for key date.
+       useEffect(() => {
+           const setDataFromHistory = async () => {
+               const jsonValue = await AsyncStorage.getItem(date);
+               if (jsonValue) {
+                   setHistoricalDateObject(JSON.parse(jsonValue));
+               }
+           };
+           setDataFromHistory();
+       }, [date]);  // Re-run when `date` changes
+
+       if (!historicalDateObject) {
+//            console.log('Historical Data Not found!');
+       }
+       if(historicalDateObject != null){
+        calories = Math.round(historicalDateObject[meal].calories);
+        protein = Math.round(historicalDateObject[meal].protein);
+        fat = Math.round(historicalDateObject[meal].fat);
+        satFat = Math.round(historicalDateObject[meal].satFat);
+        carbs = Math.round(historicalDateObject[meal].carbs);
+        sugar = Math.round(historicalDateObject[meal].sugar);
+       }
+    }
 
     const checkNewMeal = (mealName) => {
         setMeal(mealName);
@@ -28,7 +61,7 @@ const DailyRecordScreen = ({route, navigation}) => {
     <View style = {{flex: 1, backgroundColor: '#ffeedd'}}>
         <View style = {{flex: 0.06, backgroundColor: '#99ffff', justifyContent: 'center',
                         alignItems: 'center',}}>
-             <Text style = {{fontSize: 22, fontWeight: 'bold'}}>Today's Summary</Text>
+             <Text style = {{fontSize: 22, fontWeight: 'bold'}}>{displayDate}</Text>
         </View>
         <SummaryButtonPanel currentMeal={meal} meals={meals} preClickColor='#00ccff'
                 postClickColor='#0088ff' newMealFunction={checkNewMeal}></SummaryButtonPanel>
@@ -121,28 +154,3 @@ const styles = StyleSheet.create({
 });
 
 export default DailyRecordScreen;
-
-// <View style = {{flex: 0.22, backgroundColor: '#ffeedd', paddingHorizontal: 10,
-//                         paddingVertical: 25, rowGap: 20, marginBottom: 50}}>
-//             <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
-//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Breakfast' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Breakfast')}>
-//                   <Text style={styles.buttonText}>Breakfast</Text>
-//                 </TouchableOpacity>
-//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Lunch' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Lunch')}>
-//                   <Text style={styles.buttonText}>Lunch</Text>
-//                 </TouchableOpacity>
-//             </View>
-//             <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
-//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Snack' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Snack')}>
-//                   <Text style={styles.buttonText}>Snack</Text>
-//                 </TouchableOpacity>
-//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Dinner' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Dinner')}>
-//                   <Text style={styles.buttonText}>Dinner</Text>
-//                 </TouchableOpacity>
-//             </View>
-//             <View style = {{flexDirection: 'row', columnGap: 20, alignSelf: 'center'}}>
-//                 <TouchableOpacity style={[styles.circularButton, {backgroundColor: meal == 'Overall' ? '#0088ff' : '#00ccff'}]} onPress={() => checkNewMeal('Overall')}>
-//                   <Text style={styles.buttonText}>Overall</Text>
-//                 </TouchableOpacity>
-//             </View>
-//         </View>

@@ -1,5 +1,6 @@
 import { Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import MealButton from './components/MealButton';
+import {currentDate} from './App.tsx';
 
 const MealSelectionScreen = ({navigation}) => {
   return (
@@ -8,7 +9,7 @@ const MealSelectionScreen = ({navigation}) => {
             <Text style = {{fontSize: 24, fontWeight: 'bold'}}>Home</Text>
         </View>
         <View style = {{flex: 1, backgroundColor: '#ffeedd', paddingHorizontal: 20, rowGap: 20, alignItems: 'center'}}>
-            <Text style = {{fontSize: 18, fontWeight: 'bold', padding: 20,}}>What did you eat today?</Text>
+            <Text style = {{fontSize: 20, fontWeight: 'bold', padding: 20,}}>What did you eat today?</Text>
             <View style={styles.row}>
               <MealButton label = 'Breakfast' navigation = {navigation}/>
               <MealButton label = 'Lunch' navigation = {navigation}/>
@@ -18,13 +19,17 @@ const MealSelectionScreen = ({navigation}) => {
               <MealButton label = 'Snack' navigation = {navigation}/>
             </View>
             <TouchableOpacity style={[styles.circularButton, {width: 270, height: 60, backgroundColor: '#7744aa'}]}
-                              onPress={() => navigation.navigate("DailyRecordScreen",{label: 'Overall'})}>
+                    onPress={() => navigation.navigate("DailyRecordScreen",{label: 'Overall', date: currentDate})}>
               <Text style={[styles.buttonText, {fontSize: 20, fontWeight: 'bold'}]}>Check Today's Nutrition</Text>
             </TouchableOpacity>
         </View>
-        <View style = {{flex: 0.08, backgroundColor: '#ffeedd', padding: 10,
+        <View style = {{flex: 0.08, backgroundColor: '#ddffff', padding: 10,
             flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly'
             }}>
+            <TouchableOpacity style={[styles.circularButton, {width: 270, height: 60, backgroundColor: '#0088ff'}]}
+                    onPress={() => navigation.navigate("NutritionHistoryScreen",{label: 'History'})}>
+              <Text style={[styles.buttonText, {fontSize: 20, fontWeight: 'bold'}]}>Nutrition History</Text>
+            </TouchableOpacity>
         </View>
     </View>
   );

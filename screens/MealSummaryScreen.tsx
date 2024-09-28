@@ -5,10 +5,10 @@ import ItemRow from '../ItemRow';
 import RNPickerSelect from 'react-native-picker-select';
 import DailyRecordScreen from './screens/DailyRecordScreen';
 import SummaryIcon from '../components/SummaryIcon.tsx';
-import {GlobalContext} from '../GlobalContext.tsx';
+import {GlobalContext, currentDate} from '../App.tsx';
 
 const MealSummaryScreen = ({route, navigation}) => {
-    const {label} = route.params;
+    const {label, date} = route.params;
     const {globalState, setGlobalState} = useContext(GlobalContext);
     const calories = Math.round(globalState[label].calories);
     const protein = Math.round(globalState[label].protein);
@@ -19,7 +19,7 @@ const MealSummaryScreen = ({route, navigation}) => {
 
     const onSubmit = () => {
         navigation.replace("DailyRecordScreen",
-            {label: label});
+            {label: label, date: currentDate});
     }
 
     const onClickingUpdate = () => {
